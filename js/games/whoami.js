@@ -59,17 +59,25 @@ export function controls(state, A, refresh) {
     });
   };
 
+  // Вписать своё: загадать конкретного персонажа выбранному водящему.
+  const inp = el('input.text-input', { type: 'text', placeholder: `Кто будет ${A.game.target}? Впиши кого угодно` });
+  box.append(inp);
+  const startCustom = () => { const v = inp.value.trim(); if (v) { start(v); inp.value = ''; } };
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') startCustom(); });
+  box.append(el('.qa-actions', {}, [
+    el('button.btn.primary', { text: '✍️ Загадать своё', onclick: startCustom }),
+    el('button.btn.ghost', { text: '🎲 Случайный', onclick: () => start(pick(A.content.characters)) }),
+  ]));
+
   if (g.phase === 'play') {
     box.append(el('.gc-card', { html: `Персонаж: <b>${g.character}</b> (видят все, кроме ${g.target})` }));
     box.append(el('.qa-actions', {}, [
       el('button.btn.primary', { text: `✅ Угадал (+${PTS} ${g.target})`, onclick: async () => { await addScore(g.target, PTS); vibrate(60); } }),
-      el('button.btn.ghost.sm', { text: '🎲 Другой персонаж', onclick: () => start(pick(A.content.characters)) }),
       el('button.btn.ghost.sm', { text: '→ Новый водящий', onclick: () => { cycleTarget(); } }),
       el('button.btn.danger.sm', { text: 'Завершить', onclick: async () => { await clearActiveGame(); await setShowLeaderboard(true); refresh(); } }),
     ]));
   } else {
-    box.append(el('button.btn.primary.wide', { text: '🎭 Загадать персонажа и старт', onclick: () => start(pick(A.content.characters)) }));
-    box.append(el('button.btn.danger.sm', { text: 'Завершить', onclick: async () => { await clearActiveGame(); await setShowLeaderboard(true); refresh(); } }));
+    box.append(el('button.btn.danger.sm.wide', { text: 'Завершить', onclick: async () => { await clearActiveGame(); await setShowLeaderboard(true); refresh(); } }));
   }
   return box;
 }

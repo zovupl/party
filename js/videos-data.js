@@ -24,4 +24,27 @@ export const VIDEO_GAMES = [
   { group: '📺 Сериалы и мультики', emoji: '🎬', title: 'Сериал по кадру — все времена', url: 'https://www.youtube.com/watch?v=CqXd9pMxdLc' },
   { group: '📺 Сериалы и мультики', emoji: '🧸', title: 'Мультфильм по кадру', url: 'https://www.youtube.com/watch?v=vEN5_4Tl1GU' },
   { group: '📺 Сериалы и мультики', emoji: '📼', title: 'Мультсериал по кадру (ностальгия)', url: 'https://www.youtube.com/watch?v=KfJ5HzY5D3c' },
+
+  // ——— Тематические квизы (по несколько на тему) ———
+  { group: '🧙 Квиз: Гарри Поттер', emoji: '⚡', title: 'Викторина — 60 вопросов', url: 'https://www.youtube.com/watch?v=X9N0BZpyJxk' },
+  { group: '🧙 Квиз: Гарри Поттер', emoji: '🪄', title: 'Викторина по фильмам — 40 вопросов', url: 'https://www.youtube.com/watch?v=et9U5M9DDK4' },
+
+  { group: '🧛 Квиз: Сумерки', emoji: '🧛', title: 'Как хорошо ты знаешь «Сумерки»?', url: 'https://www.youtube.com/watch?v=Dz_B0zQjVtY' },
+  { group: '🧛 Квиз: Сумерки', emoji: '❤️', title: 'Насколько хорошо знаешь «Сумерки»', url: 'https://www.youtube.com/watch?v=i1cBp_QXzqs' },
+
+  { group: '⚔️ Квиз: Звёздные войны', emoji: '⚔️', title: 'Квиз «Звёздные войны»', url: 'https://www.youtube.com/watch?v=CkQ3shnr4KY' },
+  { group: '⚔️ Квиз: Звёздные войны', emoji: '🚀', title: 'Квиз для дома — Звёздные войны', url: 'https://www.youtube.com/watch?v=hNQkrQv_C8o' },
+
+  { group: '🐉 Квиз: Игра престолов', emoji: '🐉', title: 'Своя игра «Игра престолов»', url: 'https://www.youtube.com/watch?v=2kPf0JAXwo0' },
+  { group: '🐉 Квиз: Игра престолов', emoji: '🗡️', title: 'Больше квизов (поиск)', url: 'https://www.youtube.com/results?search_query=игра+престолов+квиз+видео' },
+
+  { group: '💍 Квиз: Хоббит / ВК', emoji: '💍', title: 'Властелин колец — 20 вопросов', url: 'https://www.youtube.com/watch?v=9rgRiLiLeHE' },
+  { group: '💍 Квиз: Хоббит / ВК', emoji: '🧝', title: 'ВК — 33 вопроса (фильмы и книги)', url: 'https://www.youtube.com/watch?v=YK4EUTm_cSw' },
+  { group: '💍 Квиз: Хоббит / ВК', emoji: '🗻', title: 'Псевдо-квиз: ВК и Хоббит', url: 'https://www.youtube.com/watch?v=e2K1EZ9NUac' },
+
+  { group: '🔦 Квиз: Очень странные дела', emoji: '🔦', title: 'Угадай по голосу', url: 'https://www.youtube.com/watch?v=89qhlafFCZ8' },
+  { group: '🔦 Квиз: Очень странные дела', emoji: '😈', title: 'Викторина — 30 вопросов', url: 'https://www.youtube.com/watch?v=wsFvJKxxdVY' },
+
+  { group: '❤️ Квиз: Три метра над небом', emoji: '❤️', title: 'Тест по фильму (поиск)', url: 'https://www.youtube.com/results?search_query=три+метра+над+уровнем+неба+тест+квиз' },
+  { group: '❤️ Квиз: Три метра над небом', emoji: '🏍️', title: 'Насколько хорошо знаешь (поиск)', url: 'https://www.youtube.com/results?search_query=три+метра+над+уровнем+неба+насколько+хорошо+знаешь' },
 ];
