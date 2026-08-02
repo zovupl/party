@@ -10,23 +10,6 @@
 </head>
 <body>
   <div id="app" style="color:#a99fc4;padding:24px;text-align:center">Загрузка…</div>
-  <script>
-    // Временный перехватчик ошибок — показывает причину вместо пустого экрана.
-    function __showErr(label, detail) {
-      var app = document.getElementById('app');
-      if (app) app.innerHTML = '<pre style="color:#fff;background:#300;padding:16px;margin:12px;'
-        + 'border-radius:10px;white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.5">'
-        + '⚠️ ' + label + '\n\n' + String(detail).replace(/</g, '&lt;') + '</pre>';
-    }
-    window.addEventListener('error', function (e) {
-      var d = (e.error && e.error.stack) || (e.message || e.type) + '\n' + (e.filename || '') + ':' + (e.lineno || '');
-      __showErr('Ошибка загрузки', d);
-    }, true);
-    window.addEventListener('unhandledrejection', function (e) {
-      var r = e.reason || {};
-      __showErr('Ошибка (promise)', r.stack || r.message || r);
-    });
-  </script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

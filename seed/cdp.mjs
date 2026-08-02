@@ -9,7 +9,7 @@ const PORT = 9222;
 const child = spawn(CHROME, [
   '--headless', '--disable-gpu', '--no-sandbox', '--no-first-run',
   `--remote-debugging-port=${PORT}`,
-  '--user-data-dir=C:/Users/matsv/AppData/Local/Temp/claude/cdpprof',
+  `--user-data-dir=C:/Users/matsv/AppData/Local/Temp/claude/cdpprof-${Math.floor(Math.random() * 1e9)}`,
   'about:blank',
 ], { detached: false, stdio: 'ignore' });
 
@@ -55,6 +55,8 @@ async function main() {
   send('Runtime.enable');
   send('Log.enable');
   send('Page.enable');
+  send('Network.enable');
+  send('Network.setCacheDisabled', { cacheDisabled: true });
   await sleep(200);
   send('Page.navigate', { url: URL });
   await sleep(9000);
