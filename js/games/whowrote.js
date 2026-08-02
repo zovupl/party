@@ -75,13 +75,18 @@ export function controls(state, A, refresh) {
       onclick: () => {
         const entries = Object.entries(A.game.texts || {}).map(([author, o]) => ({ text: o.text, author }));
         for (let i = entries.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [entries[i], entries[j]] = [entries[j], entries[i]]; }
-        updateActiveGame({ phase: 'list', list: entries.map((e) => ({ text: e.text })), _full: entries });
+        A.game.reveal = entries; // авторы держим ЛОКАЛЬНО, в базу не пишем
+        updateActiveGame({ phase: 'list', list: entries.map((e) => ({ text: e.text })) });
       },
     }));
   } else if (g.phase === 'list') {
     actions.append(el('button.btn.primary', {
       text: '🎭 Раскрыть авторов',
-      onclick: () => updateActiveGame({ phase: 'authors', list: g._full || g.list }),
+      onclick: () => {
+        let full = A.game.reveal;
+        if (!full) full = Object.entries(A.game.texts || {}).map(([author, o]) => ({ text: o.text, author }));
+        updateActiveGame({ phase: 'authors', list: full });
+      },
     }));
   }
   if (g.phase !== 'write') {
@@ -90,7 +95,8 @@ export function controls(state, A, refresh) {
       onclick: async () => {
         if (g.pi + 1 < g.total) {
           const pi = g.pi + 1; const rid = `ww-${pi}`; await clearTexts(rid);
-          await updateActiveGame({ pi, roundId: rid, prompt: list[pi], phase: 'write', list: null, _full: null });
+          A.game.reveal = null;
+          await updateActiveGame({ pi, roundId: rid, prompt: list[pi], phase: 'write', list: null });
         } else { await clearActiveGame(); await setShowLeaderboard(true); refresh(); }
       },
     }));

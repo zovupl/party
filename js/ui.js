@@ -100,3 +100,21 @@ export function leaderboardNode(scores, opts = {}) {
 }
 
 export const fmtTime = (s) => `${Math.max(0, Math.ceil(s))}`;
+
+// Обратный отсчёт как DOM-узел (бар + число), сам останавливается при отключении.
+export function countdownNode(startedAt, totalSec) {
+  const wrap = el('.countdown');
+  const bar = el('.timer-bar', {}, [el('.timer-fill')]);
+  const num = el('.cd-num');
+  wrap.append(bar, num);
+  const total = totalSec * 1000;
+  const tick = () => {
+    if (!wrap.isConnected) return;
+    const left = Math.max(0, total - (Date.now() - startedAt));
+    num.textContent = left > 0 ? `${Math.ceil(left / 1000)} сек` : '⏰ Время!';
+    bar.firstChild.style.width = `${(left / total) * 100}%`;
+    if (left > 0) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  return wrap;
+}
