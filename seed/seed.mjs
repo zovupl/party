@@ -65,9 +65,8 @@ async function main() {
     const t = await res.text();
     throw new Error(`Заливка не удалась (${res.status}): ${t}`);
   }
-  const q = Object.keys(content.quizzes).length;
   console.log(`✅ Контент залит в ${DB}/content`);
-  console.log(`   Квизов: ${q}, персонажей: ${content.characters.length}, слов «Крокодила»: ${
+  console.log(`   Персонажей: ${content.characters.length}, «Кто из нас»: ${content.mostLikely.length}, слов «Крокодила»: ${
     content.crocodile.easy.length + content.crocodile.hard.length + content.crocodile.hardcore.length}`);
   console.log('🎉 Готово. Теперь можно ужесточить правила (database.rules.json).');
 }
