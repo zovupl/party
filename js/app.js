@@ -7,6 +7,7 @@ import {
   goOnline, watchPlayers, watchState, watchScores,
 } from './store.js';
 import { playerQuizView } from './games/quiz.js';
+import { GAMES } from './games/registry.js';
 import { renderAdmin } from './admin.js';
 
 // ---------- Локальное состояние ----------
@@ -90,15 +91,13 @@ function bigLeaderboard() {
 // ---------- Диспетчер игр (по типу) ----------
 function gameView(g) {
   const ctx = { myName: S.myName };
-  switch (g.type) {
-    case 'quiz': return playerQuizView(S.state, ctx);
-    default:
-      return el('.center', {}, [
-        logo(),
-        el('h2.title', { text: g.title || 'Игра' }),
-        el('p.subtitle', { text: 'Эта игра ещё готовится 🛠️' }),
-      ]);
-  }
+  if (g.type === 'quiz') return playerQuizView(S.state, ctx);
+  if (GAMES[g.type]) return GAMES[g.type].player(S.state, ctx);
+  return el('.center', {}, [
+    logo(),
+    el('h2.title', { text: g.title || 'Игра' }),
+    el('p.subtitle', { text: 'Эта игра ещё готовится 🛠️' }),
+  ]);
 }
 
 // ---------- Логотип + вход в админку (долгое нажатие) ----------

@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { el, mount, toast, leaderboardNode } from './ui.js';
 import { TS, readOnce } from './firebase.js';
+import { GAMES, GAME_LIST } from './games/registry.js';
 import {
   loadContent, setActiveGame, clearActiveGame, updateActiveGame,
   setShowLeaderboard, addScore, setScore, resetEverything,
@@ -72,9 +73,11 @@ function draw() {
     }));
   }
 
-  // Активный квиз — панель управления раундом
-  if (A.quiz && cur && cur.type === 'quiz') {
+  // Панель управления активной игрой
+  if (cur && cur.type === 'quiz' && A.quiz) {
     wrap.append(quizControls(S));
+  } else if (cur && GAMES[cur.type]) {
+    wrap.append(GAMES[cur.type].controls(S.state, A, refresh));
   } else if (A.content) {
     wrap.append(gameLauncher(S));
   }
@@ -112,18 +115,24 @@ function gameLauncher(S) {
 
   box.append(el('h3.sec', { text: '🎪 Другие игры' }));
   const other = el('.game-grid');
-  const soon = [
-    ['🎵', 'Угадай мелодию'], ['🤔', 'Кто из нас…'], ['🍺', 'Я никогда не…'],
-    ['🎡', 'Рулетка фантов'], ['✍️', 'Кто это написал?'], ['🐊', 'Крокодил'],
-    ['🙈', 'Кто я?'], ['🎩', 'Алиас'],
-  ];
-  soon.forEach(([emoji, name]) => {
-    other.append(el('button.game-card.soon', {
-      onclick: () => toast('Игра добавляется следующей 🛠️'),
-    }, [el('.game-emoji', { text: emoji }), el('.game-name', { text: name }), el('.game-meta', { text: 'скоро' })]));
+  GAME_LIST.forEach((item) => {
+    other.append(el('button.game-card', {
+      onclick: () => launchGame(item),
+    }, [
+      el('.game-emoji', { text: item.emoji }),
+      el('.game-name', { text: item.name }),
+    ]));
   });
   box.append(other);
   return box;
+}
+
+async function launchGame(item) {
+  A.quiz = null;
+  if (A.answersUnsub) { A.answersUnsub(); A.answersUnsub = null; }
+  A.game = {};
+  await item.module.launch(item.type, A);
+  refresh();
 }
 
 // ---------- Логика квиза ----------

@@ -34,7 +34,11 @@
     },
 
     "buzzer": { ".read": true, ".write": true },
-    "texts":  { ".read": true, ".write": true },
-    "sins":   { ".read": true, ".write": true }
+    "sins":   { ".read": true, ".write": true },
+
+    "texts": {
+      ".read": "auth != null && auth.token.email == 'admin@zovu.pl'",
+      ".write": true
+    }
   }
 }
