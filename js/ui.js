@@ -4,10 +4,15 @@ export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
 // Создать элемент: el('button.big#go', {onclick}, ['текст'])
+// Спецификация может начинаться с класса/id (тогда тег = div): el('.center'), el('h1.title'), el('#x')
 export function el(spec, props = {}, children = []) {
-  const [tag, ...rest] = spec.split(/(?=[.#])/);
-  const node = document.createElement(tag || 'div');
-  for (const token of rest) {
+  const tokens = spec.split(/(?=[.#])/).filter(Boolean);
+  let tag = 'div';
+  const node = (() => {
+    for (const t of tokens) if (t[0] !== '.' && t[0] !== '#') { tag = t; break; }
+    return document.createElement(tag);
+  })();
+  for (const token of tokens) {
     if (token[0] === '.') node.classList.add(token.slice(1));
     else if (token[0] === '#') node.id = token.slice(1);
   }

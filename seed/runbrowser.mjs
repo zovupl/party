@@ -18,7 +18,10 @@ function makeEl(tag = 'div') {
 
 const appNode = makeEl('div'); appNode.id = 'app';
 globalThis.document = {
-  createElement: (t) => makeEl(t),
+  createElement: (t) => {
+    if (!/^[a-zA-Z][a-zA-Z0-9-]*$/.test(t)) throw new Error(`InvalidCharacterError: bad tag name '${t}'`);
+    return makeEl(t);
+  },
   createTextNode: (t) => ({ nodeType: 3, textContent: t }),
   getElementById: (id) => (id === 'app' ? appNode : null),
   addEventListener() {}, body: makeEl('body'),
