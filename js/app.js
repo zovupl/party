@@ -11,7 +11,7 @@ import { GAMES } from './games/registry.js';
 import { renderAdmin } from './admin.js';
 
 // ---------- Локальное состояние ----------
-const S = { state: {}, players: {}, scores: {}, myName: null, isAdmin: false };
+const S = { state: {}, players: {}, scores: {}, myName: null, isAdmin: false, adminView: 'panel' };
 S.myName = localStorage.getItem('party.name') || null;
 
 // ---------- Подписки ----------
@@ -29,17 +29,37 @@ if (S.myName) goOnline(S.myName);
 // ---------- Роутер ----------
 function render() {
   if (!S.state.final) confettiFired = false;
-  if (S.isAdmin) {
-    renderAdmin(S, { exitAdmin });
+
+  // Админ на экране «Панель»
+  if (S.isAdmin && S.adminView !== 'play') {
+    renderAdmin(S, { exitAdmin, goPlay });
     return;
   }
+  // Игрок (или админ в режиме «Играть»)
   if (!S.myName) { mount(nameSelect()); return; }
-  if (S.state.final) { mount(winnerScreen()); return; }
-  if (S.state.showLeaderboard) { mount(bigLeaderboard()); return; }
-  const g = S.state.activeGame;
-  if (!g) { mount(waiting()); return; }
-  mount(gameView(g));
+  const node = currentPlayerNode();
+  if (S.isAdmin) node.append(adminFab());
+  mount(node);
 }
+
+// Выбор экрана для игрока (общий для обычного игрока и админа-в-игре).
+function currentPlayerNode() {
+  if (S.state.final) return winnerScreen();
+  if (S.state.showLeaderboard) return bigLeaderboard();
+  const g = S.state.activeGame;
+  if (!g) return waiting();
+  return gameView(g);
+}
+
+// Плавающая кнопка возврата в панель (видна админу в режиме игры).
+function adminFab() {
+  return el('button.admin-fab', {
+    text: '🛠 Панель',
+    onclick: () => { S.adminView = 'panel'; render(); },
+  });
+}
+
+function goPlay() { S.adminView = 'play'; render(); }
 
 // ---------- Экран выбора имени ----------
 function nameSelect() {

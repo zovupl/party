@@ -140,8 +140,17 @@ body {
 
 /* ---------- Админка ---------- */
 .admin { max-width: 720px; margin: 0 auto; padding: 18px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
-.admin-top { display: flex; justify-content: space-between; align-items: center; }
+.admin-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .admin-title { font-size: 22px; font-weight: 800; }
+.admin-top-btns { display: flex; gap: 8px; }
+
+/* Плавающая кнопка «Панель» для админа в режиме игры */
+.admin-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 150; min-height: 48px; padding: 0 18px; border-radius: 999px; border: none; cursor: pointer;
+  font-size: 15px; font-weight: 800; color: #fff;
+  background: linear-gradient(90deg, var(--purple), var(--pink));
+  box-shadow: 0 8px 26px rgba(122,92,255,.5); }
+.admin-fab:active { transform: scale(.95); }
 .admin-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .stat { background: var(--card); border: 1px solid var(--card-brd); border-radius: 14px; padding: 12px; text-align: center; }
 .stat-val { font-size: 22px; font-weight: 800; }

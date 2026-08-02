@@ -45,8 +45,13 @@ function draw() {
   // Шапка
   wrap.append(el('.admin-top', {}, [
     el('.admin-title', { text: '🛠️ Панель админа' }),
-    el('button.btn.ghost.sm', { text: 'Выйти', onclick: api.exitAdmin }),
+    el('.admin-top-btns', {}, [
+      el('button.btn.primary.sm', { text: '🎮 Играть', onclick: api.goPlay }),
+      el('button.btn.ghost.sm', { text: 'Выйти', onclick: api.exitAdmin }),
+    ]),
   ]));
+  if (S.myName) wrap.append(el('.admin-note', { text: `Ты играешь как: ${S.myName}. Жми «🎮 Играть», чтобы отвечать/жать баззер, и «🛠 Панель», чтобы вернуться к управлению.` }));
+  else wrap.append(el('.admin-note.warn', { text: 'Ты вошёл админом без имени игрока. Нажми «Выйти», выбери имя на стартовом экране, потом снова войди админом — тогда сможешь и играть.' }));
 
   // Дашборд
   const online = Object.values(S.players).filter((p) => p && p.online).length;
