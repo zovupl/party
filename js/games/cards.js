@@ -31,7 +31,7 @@ export function player(state, ctx) {
   const g = state.activeGame;
   const wrap = el('.game.center');
   wrap.append(el('.card-count', { text: `${g.i + 1} / ${g.total}` }));
-  wrap.append(el('.big-card', { text: g.text }));
+  wrap.append(el('.big-card.anim-flip', { text: g.text }));
   if (g.type === 'never') {
     wrap.append(el('button.btn.primary.wide', {
       text: 'Я делал 🍺',

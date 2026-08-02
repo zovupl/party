@@ -272,6 +272,41 @@ body {
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 .winner-pts { font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
 
+/* ---------- Кнопка меню (на каждом экране) ---------- */
+.menu-fab { position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 12px; z-index: 140;
+  min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--card-brd);
+  background: rgba(20,10,36,.82); backdrop-filter: blur(6px); color: var(--txt); font-weight: 700; font-size: 14px; cursor: pointer; }
+.menu-fab:active { transform: scale(.95); }
+
+/* Нижний лист-меню */
+.sheet-back { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 200; display: flex; align-items: flex-end; }
+.sheet { width: 100%; background: var(--bg2); border-top-left-radius: 22px; border-top-right-radius: 22px;
+  padding: 18px 16px calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px;
+  animation: sheetUp .3s ease; }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+.sheet-title { text-align: center; color: var(--muted); font-weight: 700; }
+.sheet-btn { min-height: 54px; border-radius: 14px; border: 1px solid var(--card-brd); background: var(--card); color: var(--txt); font-size: 16px; font-weight: 700; cursor: pointer; }
+.sheet-btn.primary { background: linear-gradient(90deg, var(--pink), var(--purple)); border: none; }
+.sheet-btn.danger { background: linear-gradient(90deg, #ff4d5e, #b02a5b); border: none; }
+.sheet-btn.ghost { background: transparent; color: var(--muted); border: none; }
+
+/* ---------- Видео-игры ---------- */
+.video-emoji { font-size: 72px; }
+.video-open { font-size: 18px; margin-top: 6px; }
+.video-card { border-color: rgba(0,229,255,.35); }
+.vg-group-title { color: var(--cyan); font-weight: 700; margin: 8px 0 2px; }
+.stop-bar { width: 100%; }
+
+/* ---------- Разные анимации входа для игр ---------- */
+.anim-pop { animation: popIn .5s cubic-bezier(.2,1.3,.4,1); }
+@keyframes popIn { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.anim-flip { animation: flipIn .55s ease backwards; }
+@keyframes flipIn { from { transform: perspective(600px) rotateX(90deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.anim-zoom { animation: zoomIn .5s ease backwards; }
+@keyframes zoomIn { from { transform: scale(1.4); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: none; } }
+.anim-slide { animation: slideInUp .5s ease backwards; }
+@keyframes slideInUp { from { transform: translateY(44px); opacity: 0; } to { transform: none; opacity: 1; } }
+
 .score-editor { background: var(--card); border: 1px solid var(--card-brd); border-radius: 16px; padding: 16px; }
 .se-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
 .se-row:last-child { border-bottom: none; }

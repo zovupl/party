@@ -26,10 +26,10 @@ export function player(state, ctx) {
   }
   wrap.append(el('.who-badge', { text: `Водит: ${g.target}` }));
   if (ctx.myName === g.target) {
-    wrap.append(el('.big-card', { text: '???' }));
+    wrap.append(el('.big-card.anim-slide', { text: '???' }));
     wrap.append(el('p.subtitle', { text: 'Задавай вопросы да/нет и угадай, кто ты!' }));
   } else {
-    wrap.append(el('.big-card', { text: g.character }));
+    wrap.append(el('.big-card.anim-slide', { text: g.character }));
     wrap.append(el('p.subtitle', { text: 'Отвечай честно да/нет, не подсказывай напрямую!' }));
   }
   wrap.append(countdownNode(g.startedAt, g.totalTime));

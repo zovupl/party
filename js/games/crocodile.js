@@ -34,11 +34,11 @@ export function player(state, ctx) {
 
   wrap.append(el('.who-badge', { text: `Показывает: ${g.shower}` }));
   if (ctx.myName === g.shower) {
-    wrap.append(el('.big-card', { text: g.word }));
+    wrap.append(el('.big-card.anim-zoom', { text: g.word }));
     wrap.append(el('p.subtitle', { text: 'Объясняй жестами, без слов и звуков!' }));
     wrap.append(countdownNode(g.startedAt, g.totalTime));
   } else {
-    wrap.append(el('.big-card', { text: '🤫' }));
+    wrap.append(el('.big-card.anim-pop', { text: '🤫' }));
     wrap.append(countdownNode(g.startedAt, g.totalTime));
     wrap.append(el('button.btn.primary.wide', {
       text: 'Угадал! ✅',

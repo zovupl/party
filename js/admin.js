@@ -2,6 +2,7 @@ import { CONFIG } from './config.js';
 import { el, mount, toast, leaderboardNode } from './ui.js';
 import { TS, readOnce } from './firebase.js';
 import { GAMES, GAME_LIST } from './games/registry.js';
+import { VIDEO_GAMES } from './videos-data.js';
 import {
   loadContent, setActiveGame, clearActiveGame, updateActiveGame,
   setShowLeaderboard, setFinal, addScore, setScore, resetEverything,
@@ -50,7 +51,7 @@ function draw() {
       el('button.btn.ghost.sm', { text: 'Выйти', onclick: api.exitAdmin }),
     ]),
   ]));
-  if (S.myName) wrap.append(el('.admin-note', { text: `Ты играешь как: ${S.myName}. Жми «🎮 Играть», чтобы отвечать/жать баззер, и «🛠 Панель», чтобы вернуться к управлению.` }));
+  if (S.myName) wrap.append(el('.admin-note', { text: `Ты играешь как: ${S.myName}. «🎮 Играть» — режим игрока; вернуться сюда — кнопкой «☰ Меню» → «В панель админа».` }));
   else wrap.append(el('.admin-note.warn', { text: 'Ты вошёл админом без имени игрока. Нажми «Выйти», выбери имя на стартовом экране, потом снова войди админом — тогда сможешь и играть.' }));
 
   // Дашборд
@@ -61,6 +62,14 @@ function draw() {
     stat('🎮 Игра', cur ? (cur.title || cur.type) : '—'),
     stat('👑 Лидер', topName(S.scores)),
   ]));
+
+  // Постоянная кнопка «Остановить» — видна всегда, когда что-то запущено
+  if (cur || S.state.showLeaderboard || S.state.final) {
+    wrap.append(el('button.btn.danger.wide.stop-bar', {
+      text: '⏹️ Остановить игру → в главное меню',
+      onclick: stopEverything,
+    }));
+  }
 
   // Глобальные кнопки
   wrap.append(el('.admin-globals', {}, [
@@ -83,8 +92,9 @@ function draw() {
   }
 
   // Панель управления активной игрой
-  if (cur && cur.type === 'quiz' && A.quiz) {
-    wrap.append(quizControls(S));
+  if (cur && cur.type === 'video') {
+    wrap.append(videoControls(S));
+    wrap.append(gameLauncher(S));
   } else if (cur && GAMES[cur.type]) {
     wrap.append(GAMES[cur.type].controls(S.state, A, refresh));
   } else if (A.content) {
@@ -107,22 +117,25 @@ function topName(scores) {
 }
 
 // ---------- Запуск игр ----------
-function gameLauncher(S) {
+function gameLauncher() {
   const box = el('.launcher');
-  box.append(el('h3.sec', { text: '📚 Квизы' }));
-  const grid = el('.game-grid');
-  for (const [id, data] of Object.entries(A.content.quizzes || {})) {
-    grid.append(el('button.game-card', {
-      onclick: () => startQuiz(id, data),
-    }, [
-      el('.game-emoji', { text: data.emoji || '❓' }),
-      el('.game-name', { text: data.title }),
-      el('.game-meta', { text: `${data.questions.length} вопросов` }),
-    ]));
-  }
-  box.append(grid);
 
-  box.append(el('h3.sec', { text: '🎪 Другие игры' }));
+  // Видео-игры (YouTube)
+  box.append(el('h3.sec', { text: '🎬 Видео-игры (YouTube)' }));
+  box.append(el('.gc-muted', { text: 'Открывает готовое видео — оно и есть игра. Играется с большого экрана.' }));
+  const groups = {};
+  VIDEO_GAMES.forEach((v) => { (groups[v.group] = groups[v.group] || []).push(v); });
+  for (const [gname, items] of Object.entries(groups)) {
+    box.append(el('.vg-group-title', { text: gname }));
+    const grid = el('.game-grid');
+    items.forEach((v) => grid.append(el('button.game-card.video-card', {
+      onclick: () => launchVideo(v),
+    }, [el('.game-emoji', { text: v.emoji }), el('.game-name', { text: v.title })])));
+    box.append(grid);
+  }
+
+  // Интерактивные игры
+  box.append(el('h3.sec', { text: '🎪 Интерактивные игры (в приложении)' }));
   const other = el('.game-grid');
   GAME_LIST.forEach((item) => {
     other.append(el('button.game-card', {
@@ -141,6 +154,35 @@ async function launchGame(item) {
   if (A.answersUnsub) { A.answersUnsub(); A.answersUnsub = null; }
   A.game = {};
   await item.module.launch(item.type, A);
+  refresh();
+}
+
+async function launchVideo(v) {
+  A.quiz = null;
+  await setShowLeaderboard(false);
+  await setActiveGame({ type: 'video', title: v.title, emoji: v.emoji, url: v.url });
+  try { window.open(v.url, '_blank', 'noopener'); } catch (_) {}
+  refresh();
+}
+
+function videoControls(S) {
+  const g = S.state.activeGame;
+  const box = el('.game-ctrl');
+  box.append(el('.gc-head', { text: `${g.emoji} ${g.title}` }));
+  box.append(el('.gc-muted', { text: 'Видео открыто на твоём экране. У игроков в телефоне тоже есть кнопка «Открыть».' }));
+  box.append(el('.qa-actions', {}, [
+    el('a.btn.primary', { href: g.url, target: '_blank', rel: 'noreferrer' }, ['▶ Открыть видео снова']),
+    el('button.btn.danger.sm', { text: '⏹ Стоп', onclick: stopEverything }),
+  ]));
+  return box;
+}
+
+async function stopEverything() {
+  A.quiz = null;
+  if (A.answersUnsub) { A.answersUnsub(); A.answersUnsub = null; }
+  await clearActiveGame();
+  await setShowLeaderboard(false);
+  await setFinal(false);
   refresh();
 }
 

@@ -6,7 +6,7 @@ export const getAuth = () => ({});
 export const ref = () => ({});
 export const onValue = () => () => {};
 export const off = () => {};
-export const get = () => Promise.resolve({ val: () => null });
+export const get = () => Promise.resolve({ val: () => ({ ok: true }) });
 export const set = () => Promise.resolve();
 export const update = () => Promise.resolve();
 export const push = () => ({});

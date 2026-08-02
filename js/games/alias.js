@@ -31,10 +31,10 @@ export function player(state, ctx) {
   const partner = g.pair[0] === g.explainer ? g.pair[1] : g.pair[0];
   wrap.append(el('.who-badge', { text: `Пара: ${g.pair[0]} + ${g.pair[1]}` }));
   if (ctx.myName === g.explainer) {
-    wrap.append(el('.big-card', { text: g.word }));
+    wrap.append(el('.big-card.anim-pop', { text: g.word }));
     wrap.append(el('p.subtitle', { text: 'Объясняй словами. Однокоренные — нельзя!' }));
   } else if (ctx.myName === partner) {
-    wrap.append(el('.big-card', { text: '🎧 Угадывай!' }));
+    wrap.append(el('.big-card.anim-pop', { text: '🎧 Угадывай!' }));
     wrap.append(el('p.subtitle', { text: 'Слушай напарника и называй слово вслух.' }));
   } else {
     wrap.append(el('.big-card', { text: '🙊' }));

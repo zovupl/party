@@ -38,6 +38,15 @@ try {
   await import('../js/app.js');
   await new Promise((r) => setTimeout(r, 50));
   console.log('✅ Граф модулей загрузился и первый render() отработал без исключений.');
+
+  // Дополнительно: рендер админ-панели (видео-лаунчер) в двух состояниях.
+  const { renderAdmin } = await import('../js/admin.js');
+  const api = { exitAdmin() {}, goPlay() {} };
+  renderAdmin({ players: {}, scores: {}, state: {}, myName: 'Митя', isAdmin: true }, api);
+  await new Promise((r) => setTimeout(r, 60));
+  renderAdmin({ players: {}, scores: {}, state: { activeGame: { type: 'video', title: 'Тест', emoji: '🎬', url: 'https://x' } }, myName: 'Митя', isAdmin: true }, api);
+  await new Promise((r) => setTimeout(r, 60));
+  console.log('✅ Админ-панель (лаунчер видео-игр + управление видео) отрендерились без исключений.');
 } catch (e) {
   console.log('❌ ОШИБКА при загрузке/рендере:\n');
   console.log(e && e.stack ? e.stack : e);

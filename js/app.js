@@ -5,8 +5,8 @@ import {
 } from './firebase.js';
 import {
   goOnline, watchPlayers, watchState, watchScores,
+  clearActiveGame, setShowLeaderboard, setFinal,
 } from './store.js';
-import { playerQuizView } from './games/quiz.js';
 import { GAMES } from './games/registry.js';
 import { renderAdmin } from './admin.js';
 
@@ -36,10 +36,39 @@ function render() {
     return;
   }
   // Игрок (или админ в режиме «Играть»)
-  if (!S.myName) { mount(nameSelect()); return; }
+  if (!S.myName || S.forceNameSelect) { mount(nameSelect()); return; }
   const node = currentPlayerNode();
-  if (S.isAdmin) node.append(adminFab());
+  node.append(menuButton());
   mount(node);
+}
+
+// Кнопка меню (есть на КАЖДОМ экране) — выход/в меню/сменить имя.
+function menuButton() {
+  return el('button.menu-fab', { text: '☰ Меню', onclick: openMenu });
+}
+
+function openMenu() {
+  vibrate(20);
+  const back = el('.sheet-back', { onclick: (e) => { if (e.target === back) back.remove(); } });
+  const sheet = el('.sheet');
+  sheet.append(el('.sheet-title', { text: 'Меню' }));
+  const add = (label, cls, fn) => sheet.append(el(`button.sheet-btn${cls}`, { text: label, onclick: () => { back.remove(); fn(); } }));
+  if (S.isAdmin) {
+    add('🛠 В панель админа', '.primary', () => { S.adminView = 'panel'; render(); });
+    if (S.state.activeGame || S.state.showLeaderboard || S.state.final) add('⏹ Остановить игру → в меню', '.danger', stopGame);
+  }
+  add('🔄 Сменить имя', '', () => { S.forceNameSelect = true; render(); });
+  add('Закрыть', '.ghost', () => {});
+  back.append(sheet);
+  document.body.append(back);
+}
+
+async function stopGame() {
+  await clearActiveGame();
+  await setShowLeaderboard(false);
+  await setFinal(false);
+  if (S.isAdmin) S.adminView = 'panel';
+  render();
 }
 
 // Выбор экрана для игрока (общий для обычного игрока и админа-в-игре).
@@ -49,14 +78,6 @@ function currentPlayerNode() {
   const g = S.state.activeGame;
   if (!g) return waiting();
   return gameView(g);
-}
-
-// Плавающая кнопка возврата в панель (видна админу в режиме игры).
-function adminFab() {
-  return el('button.admin-fab', {
-    text: '🛠 Панель',
-    onclick: () => { S.adminView = 'panel'; render(); },
-  });
 }
 
 function goPlay() { S.adminView = 'play'; render(); }
@@ -74,6 +95,7 @@ function nameSelect() {
     const btn = el('button.name-btn', {
       onclick: () => {
         S.myName = name;
+        S.forceNameSelect = false;
         localStorage.setItem('party.name', name);
         goOnline(name);
         vibrate(30);
@@ -129,13 +151,23 @@ function winnerScreen() {
 // ---------- Диспетчер игр (по типу) ----------
 function gameView(g) {
   const ctx = { myName: S.myName };
-  if (g.type === 'quiz') return playerQuizView(S.state, ctx);
+  if (g.type === 'video') return videoPlayerView(g);
   if (GAMES[g.type]) return GAMES[g.type].player(S.state, ctx);
   return el('.center', {}, [
     logo(),
     el('h2.title', { text: g.title || 'Игра' }),
     el('p.subtitle', { text: 'Эта игра ещё готовится 🛠️' }),
   ]);
+}
+
+// Экран видео-игры для игрока: видео и есть игра.
+function videoPlayerView(g) {
+  const wrap = el('.center');
+  wrap.append(el('.video-emoji.anim-pop', { text: g.emoji || '🎬' }));
+  wrap.append(el('h2.title', { text: g.title }));
+  wrap.append(el('p.subtitle', { text: 'Это видео — и есть игра. Смотрим вместе на большом экране!' }));
+  wrap.append(el('a.btn.primary.wide.video-open', { href: g.url, target: '_blank', rel: 'noreferrer' }, ['▶ Открыть на YouTube']));
+  return wrap;
 }
 
 // ---------- Логотип + вход в админку (долгое нажатие) ----------
