@@ -1,0 +1,40 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "content": {
+      ".read": "auth != null && auth.token.email == 'admin@zovu.pl'",
+      ".write": "auth != null && auth.token.email == 'admin@zovu.pl'"
+    },
+
+    "state": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'admin@zovu.pl'"
+    },
+
+    "scores": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'admin@zovu.pl'"
+    },
+
+    "players": {
+      ".read": true,
+      ".write": true
+    },
+
+    "answers": {
+      ".read": "auth != null && auth.token.email == 'admin@zovu.pl'",
+      ".write": true
+    },
+
+    "votes": {
+      ".read": "auth != null && auth.token.email == 'admin@zovu.pl'",
+      ".write": true
+    },
+
+    "buzzer": { ".read": true, ".write": true },
+    "texts":  { ".read": true, ".write": true },
+    "sins":   { ".read": true, ".write": true }
+  }
+}
