@@ -18,6 +18,7 @@ export const setActiveGame = (game) => writeVal('state/activeGame', game);
 export const clearActiveGame = () => removeVal('state/activeGame');
 export const updateActiveGame = (patch) => updateVal('state/activeGame', patch);
 export const setShowLeaderboard = (on) => writeVal('state/showLeaderboard', !!on);
+export const setFinal = (on) => writeVal('state/final', !!on);
 
 // ---------- Очки ----------
 export const watchScores = (cb) => watch('scores', (v) => cb(v || {}));

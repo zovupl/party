@@ -4,7 +4,7 @@ import { TS, readOnce } from './firebase.js';
 import { GAMES, GAME_LIST } from './games/registry.js';
 import {
   loadContent, setActiveGame, clearActiveGame, updateActiveGame,
-  setShowLeaderboard, addScore, setScore, resetEverything,
+  setShowLeaderboard, setFinal, addScore, setScore, resetEverything,
   clearAnswers, watchAnswers,
 } from './store.js';
 
@@ -61,7 +61,11 @@ function draw() {
   wrap.append(el('.admin-globals', {}, [
     el('button.btn.primary', {
       text: S.state.showLeaderboard ? '🙈 Скрыть лидерборд' : '🏆 Показать лидерборд всем',
-      onclick: () => setShowLeaderboard(!S.state.showLeaderboard),
+      onclick: () => { if (S.state.showLeaderboard) setFinal(false); setShowLeaderboard(!S.state.showLeaderboard); },
+    }),
+    el('button.btn.primary', {
+      text: '🎉 Победитель вечера',
+      onclick: async () => { await clearActiveGame(); await setShowLeaderboard(true); await setFinal(true); },
     }),
     el('button.btn.danger', { text: '💣 Сброс вечера', onclick: () => confirmReset() }),
   ]));

@@ -1,5 +1,5 @@
 import { CONFIG } from './config.js';
-import { el, mount, $, toast, leaderboardNode, vibrate } from './ui.js';
+import { el, mount, $, toast, leaderboardNode, vibrate, confetti } from './ui.js';
 import {
   auth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
 } from './firebase.js';
@@ -28,11 +28,13 @@ if (S.myName) goOnline(S.myName);
 
 // ---------- Роутер ----------
 function render() {
+  if (!S.state.final) confettiFired = false;
   if (S.isAdmin) {
     renderAdmin(S, { exitAdmin });
     return;
   }
   if (!S.myName) { mount(nameSelect()); return; }
+  if (S.state.final) { mount(winnerScreen()); return; }
   if (S.state.showLeaderboard) { mount(bigLeaderboard()); return; }
   const g = S.state.activeGame;
   if (!g) { mount(waiting()); return; }
@@ -85,6 +87,22 @@ function waiting() {
 function bigLeaderboard() {
   const wrap = el('.center');
   wrap.append(leaderboardNode(S.scores, { title: '🏆 Таблица лидеров' }));
+  return wrap;
+}
+
+// ---------- Финальный экран «Победитель вечера» ----------
+let confettiFired = false;
+function winnerScreen() {
+  const rows = Object.entries(S.scores || {}).sort((a, b) => b[1] - a[1]);
+  const winner = rows.length ? rows[0][0] : '—';
+  const wrap = el('.center');
+  wrap.append(el('.logo', { text: '🎉 PARTY' }));
+  wrap.append(el('.crown', { text: '👑' }));
+  wrap.append(el('p.subtitle', { text: 'Победитель вечера' }));
+  wrap.append(el('h1.winner-name', { text: winner }));
+  if (rows.length) wrap.append(el('.winner-pts', { text: `${rows[0][1]} очков` }));
+  wrap.append(leaderboardNode(S.scores, {}));
+  if (!confettiFired) { confettiFired = true; confetti(6000); vibrate([80, 40, 80, 40, 120]); }
   return wrap;
 }
 

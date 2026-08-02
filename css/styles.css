@@ -255,6 +255,14 @@ body {
 
 .btn.wide { width: 100%; max-width: 420px; }
 
+/* Финальный экран */
+.crown { font-size: 64px; animation: bob 2s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-10px) rotate(4deg); } }
+.winner-name { font-size: clamp(32px, 10vw, 56px); margin: 4px 0;
+  background: linear-gradient(90deg, var(--gold), var(--pink), var(--purple));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.winner-pts { font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+
 .score-editor { background: var(--card); border: 1px solid var(--card-brd); border-radius: 16px; padding: 16px; }
 .se-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
 .se-row:last-child { border-bottom: none; }
