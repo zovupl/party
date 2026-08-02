@@ -1,14 +1,14 @@
 // Реестр мини-игр (кроме квизов, у которых свой движок).
 import * as cards from './cards.js';
 import * as mostlikely from './mostlikely.js';
-import * as buzzer from './buzzer.js';
 import * as whowrote from './whowrote.js';
 import * as roulette from './roulette.js';
 import * as crocodile from './crocodile.js';
 import * as whoami from './whoami.js';
 import * as alias from './alias.js';
 
-const modules = [buzzer, mostlikely, cards, whowrote, crocodile, whoami, alias, roulette];
+// «Угадай мелодию» теперь видео-игра (YouTube), отдельный баззер-модуль не нужен.
+const modules = [mostlikely, cards, whowrote, crocodile, whoami, alias, roulette];
 
 export const GAMES = {};      // type -> module { player, launch, controls }
 export const GAME_LIST = [];  // [{ type, emoji, name, cat, module }]

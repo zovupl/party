@@ -70,10 +70,30 @@ async function main() {
     ws.addEventListener('message', h);
   });
 
+  // Интерактивный тест: выбрать имя -> проверить меню -> открыть меню
+  const iId = ++id;
+  const expr = `(async () => {
+    const rep = [];
+    const nb = document.querySelector('.name-btn'); if (!nb) return 'NO name-btn';
+    nb.click(); await new Promise(r=>setTimeout(r,700));
+    rep.push('после выбора имени: menu-fab='+!!document.querySelector('.menu-fab')+', who-badge='+!!document.querySelector('.who-badge'));
+    const mf = document.querySelector('.menu-fab'); if (mf) mf.click();
+    await new Promise(r=>setTimeout(r,400));
+    rep.push('после ☰: sheet='+!!document.querySelector('.sheet')+', кнопок='+document.querySelectorAll('.sheet-btn').length);
+    return rep.join(' | ');
+  })()`;
+  ws.send(JSON.stringify({ id: iId, method: 'Runtime.evaluate', params: { expression: expr, awaitPromise: true, returnByValue: true } }));
+  const interact = await new Promise((res) => {
+    const h = (ev) => { const m = JSON.parse(ev.data); if (m.id === iId) { ws.removeEventListener('message', h); res(m.result && m.result.result && m.result.result.value); } };
+    ws.addEventListener('message', h);
+  });
+
   console.log('=== EXCEPTIONS (' + errors.length + ') ===');
   errors.forEach((e) => console.log(e, '\n'));
   console.log('=== ERROR LOGS (' + logs.length + ') ===');
   logs.forEach((l) => console.log(l));
+  console.log('\n=== INTERACTION ===');
+  console.log(interact);
   console.log('\n=== #app innerHTML (first 1200) ===');
   console.log(appHtml);
 
